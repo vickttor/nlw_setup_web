@@ -3,14 +3,21 @@ import * as Dialog from '@radix-ui/react-dialog';
 
 import logoImage from "../assets/logo.svg";
 import { NewHabitForm } from "./NewHabitForm";
+import { useState } from "react";
 
 export function Header() {
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  function closeDialog() {
+    setIsDialogOpen(false);
+  }
+  
   return (
     <div className="w-full max-3xl mx-auto flex items-center justify-between">
       <img src={logoImage} alt="Habits Logo Image" />
 
-      <Dialog.Root>
+      <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <Dialog.Trigger 
           type="button"
           className="border border-violet-500 font-semibold rounded-lg px-6 py-4 flex items-center gap-3 hover:border-violet-300 transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 focus:ring-offset-background"
@@ -30,7 +37,7 @@ export function Header() {
                 Criar hábito
               </Dialog.Title>
 
-              <NewHabitForm />
+              <NewHabitForm closeDialogOnSubmission={closeDialog}/>
 
           </Dialog.Content>
         </Dialog.Portal>

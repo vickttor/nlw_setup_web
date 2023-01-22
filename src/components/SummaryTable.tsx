@@ -41,7 +41,7 @@ export function SummaryTable() {
         })}
       </div>
 
-        <div className="grid grid-rows-7 grid-flow-col gap-3">
+        <div className="grid grid-rows-7 grid-flow-col gap-3 w-max py-2 overflow-x-auto">
           {summary.length > 0 && summaryDates.map(date=> {
 
             const dayInSummary = summary.find(day=>{
@@ -52,7 +52,7 @@ export function SummaryTable() {
               <HabitDay 
                 key={date.toString()}
                 date={date}
-                amount={dayInSummary?.amount } 
+                defaultAmount={dayInSummary?.amount } 
                 defaultCompleted={dayInSummary?.completed}
               />
             )

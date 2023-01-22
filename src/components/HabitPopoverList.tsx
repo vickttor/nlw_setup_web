@@ -9,7 +9,8 @@ import { motion } from "framer-motion";
 
 interface HabitPopoverListProps {
   date: Date
-  onCompletedChanged: (completed: number) => void
+  updateAmount: (amount: number) => void
+  updateCompleted: (completed: number) => void;
 }
 
 interface HabitsInfo {
@@ -21,7 +22,7 @@ interface HabitsInfo {
   completedHabits: string[]
 }
 
-export function HabitPopoverList({ date, onCompletedChanged}: HabitPopoverListProps) {
+export function HabitPopoverList({ date, updateAmount, updateCompleted}: HabitPopoverListProps) {
 
   const [habitsInfo, setHabitsInfo] = useState<HabitsInfo>();
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,8 @@ export function HabitPopoverList({ date, onCompletedChanged}: HabitPopoverListPr
       }
     }).then(response => {
       setHabitsInfo(response.data);
+      updateCompleted(response.data.completedHabits.length);
+      updateAmount(response.data.possibleHabits.length);
     }).finally(()=> {
       setLoading(false);
     });
@@ -60,7 +63,7 @@ export function HabitPopoverList({ date, onCompletedChanged}: HabitPopoverListPr
       completedHabits
     });
 
-    onCompletedChanged(completedHabits.length);
+    updateCompleted(completedHabits.length);
   }
 
   const isDateInPast = dayjs(date).endOf('day').isBefore(new Date());
@@ -76,12 +79,12 @@ export function HabitPopoverList({ date, onCompletedChanged}: HabitPopoverListPr
       {habitsInfo && habitsInfo.possibleHabits.length > 0 ? habitsInfo.possibleHabits.map((habit) => {
         return (
           <motion.div
+            key={habit.id}
             tabIndex={-1}
             whileHover={{  scale: 1.05 }}
             transition={{ duration: 0.1 }}
           >
             <Checkbox.Root
-              key={habit.id}
               onCheckedChange={()=> handleToggleHabit(habit.id)}
               checked={habitsInfo.completedHabits.includes(habit.id)}
               disabled={isDateInPast}

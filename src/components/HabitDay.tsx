@@ -1,36 +1,42 @@
 import * as Popover from '@radix-ui/react-popover';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
+import { motion } from "framer-motion";
 import { useState } from 'react';
 import { HabitPopoverList } from "./HabitPopoverList";
 import { ProgressBar } from './ProgressBar';
-import { motion } from "framer-motion"
 
 interface HabitDayProps {
   date: Date;
   defaultCompleted?: number;
-  amount?: number;
+  defaultAmount?: number;
 }
 
-export function HabitDay({date, defaultCompleted = 0, amount = 0, ...props}: HabitDayProps) {
+export function HabitDay({date, defaultCompleted = 0, defaultAmount = 0, ...props}: HabitDayProps) {
 
   const [completed, setCompleted] = useState(defaultCompleted);
+  const [amount, setAmount] = useState(defaultAmount);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const completedPercentage = amount > 0 ? Math.round((completed / amount) * 100) : 0;
 
   const dayAndMonth = dayjs(date).format('DD/MM');
   const dayOfWeek = dayjs(date).format('dddd');
 
-  function handleCompletedChanged(completed: number) {
+  function handleUpdateCompleted(completed: number) {
     setCompleted(completed);
   }
 
+  function handleUpdateAmount(amount: number){
+    setAmount(amount);
+  }
+
   return (
-    <Popover.Root>
+    <Popover.Root open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <motion.button
-      tabIndex={-1}
-        whileTap={{ 
-          scale: 0.8,
+        tabIndex={-1}
+        whileHover={{ 
+          scale: 1.15,
         }}
         drag
         dragConstraints={{
@@ -51,12 +57,12 @@ export function HabitDay({date, defaultCompleted = 0, amount = 0, ...props}: Hab
 
         })}></Popover.Trigger>
       </motion.button>
-
       
       <Popover.Portal>
         <motion.div 
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
+          transition={{duration: 0.1}}
           viewport={{ once: true }}
         >
         
@@ -66,7 +72,7 @@ export function HabitDay({date, defaultCompleted = 0, amount = 0, ...props}: Hab
 
           <ProgressBar progress={completedPercentage}/>
 
-          <HabitPopoverList date={date} onCompletedChanged={handleCompletedChanged}/>
+          <HabitPopoverList date={date} updateAmount={handleUpdateAmount} updateCompleted={handleUpdateCompleted}/>
 
           <Popover.Arrow height={8} width={16} className='fill-zinc-900'/>
         </Popover.Content>

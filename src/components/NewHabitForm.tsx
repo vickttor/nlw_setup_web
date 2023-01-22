@@ -3,18 +3,25 @@ import { Check } from "phosphor-react";
 import { FormEvent, useState } from "react";
 import { api } from "../lib/axios";
 import {motion} from "framer-motion";
+import { toast } from "react-toastify";
 
 const availableWeekDays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
-export function NewHabitForm() {
+interface NewHabitForm {
+  closeDialogOnSubmission: () => void;
+}
+
+export function NewHabitForm({closeDialogOnSubmission}: NewHabitForm) {
 
   const [title, setTitle] = useState("");
   const [weekDays, setWeekDays] = useState<number[]>([]);
+  const [triggerFired, setTriggerFired] = useState<"save" | "saveAndClose" | null>(null);
 
   async function createNewHabit(event: FormEvent){
     event.preventDefault();
 
     if(!title || weekDays.length === 0) {
+      toast.error('Preencha o título e pelomenos 1 dia!');
       return;
     }
 
@@ -22,13 +29,16 @@ export function NewHabitForm() {
       title, 
       weekDays
     })
-
+       
     setTitle('');
     setWeekDays([]);
 
-    alert('Hábito criado com sucesso!');
-  }
+    toast.success('Hábito criado com sucesso!');
 
+    if(triggerFired === 'saveAndClose') {
+      closeDialogOnSubmission();
+    }
+  }
 
   function handleCheckboxToggle(weekDayIndex: number) {
 
@@ -96,16 +106,30 @@ export function NewHabitForm() {
           )
         })}
 
-
       </div>
 
-      <button 
-        type="submit"
-        className="mt-6 rounded-lg p-4 flex items-center gap-3 font-semibold justify-center bg-green-600 hover:bg-green-500 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
-      >
-        <Check size={20} weight="bold" />
-        Confirmar
-      </button>
+      <div className="w-full h-auto flex flex-row items-center justify-between gap-3">
+        <button 
+          type="submit"
+          disabled={title.trim().length === 0 || weekDays.length === 0}
+          className="flex-1 mt-6 rounded-lg p-4 flex items-center gap-3 font-semibold justify-center disabled:cursor-not-allowed disabled:bg-green-700 bg-green-600 hover:bg-green-500 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
+        >
+          <Check size={20} weight="bold" />
+          Salvar
+        </button>
+
+        <button 
+          type="submit"
+          onClick={()=> {
+            setTriggerFired("saveAndClose");
+          }}
+          disabled={title.trim().length === 0 || weekDays.length === 0}
+          className="flex-1 mt-6 rounded-lg p-4 flex items-center gap-3 font-semibold justify-center disabled:cursor-not-allowed disabled:bg-green-700 bg-green-600 hover:bg-green-500 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
+        >
+          <Check size={20} weight="bold" />
+          Salvar e fechar
+        </button>
+      </div>
     </form>
   )
 }
