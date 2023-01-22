@@ -1,10 +1,10 @@
-import { Check } from "phosphor-react";
 import * as Checkbox from "@radix-ui/react-checkbox";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { Check } from "phosphor-react";
+import { FormEvent, useState } from "react";
 import { api } from "../lib/axios";
+import {motion} from "framer-motion";
 
 const availableWeekDays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
-
 
 export function NewHabitForm() {
 
@@ -61,33 +61,38 @@ export function NewHabitForm() {
       </label>
 
       <div className="flex flex-col gap-2 mt-3">
-
         {availableWeekDays.map((weekday, index) => {
           return (
-            <Checkbox.Root 
+            <motion.div
               key={weekday} 
-              className='flex items-center gap-3 group focus:outline-none'
-              checked={weekDays.includes(index)}
-              onCheckedChange={()=>handleCheckboxToggle(index)}
+              tabIndex={-1}
+              whileHover={{  scale: 1.05 }}
+              transition={{ duration: 0.1 }}
             >
-              <div
-                className="h-8 w-8 rounded-lg flex items-center justify-center bg-zinc-900 border-2 border-zinc-800 group-data-[state=checked]:bg-green-500 group-data-[state=checked]:border-green-500 transition-colors group-focus:ring-2 group-focus:ring-violet-500 group-focus:ring-offset-2 group-focus:ring-offset-background"
+              <Checkbox.Root 
+                className='flex items-center gap-3 group focus:outline-none'
+                checked={weekDays.includes(index)}
+                onCheckedChange={()=>handleCheckboxToggle(index)}
               >
-                <Checkbox.Indicator>
-                  <Check
-                    size={20}
-                    className="text-white"
-                  />
-                </Checkbox.Indicator>
-              </div>
+                <div
+                  className="h-8 w-8 rounded-lg flex items-center justify-center bg-zinc-900 border-2 border-zinc-800 group-data-[state=checked]:bg-green-500 group-data-[state=checked]:border-green-500 transition-colors group-focus:ring-2 group-focus:ring-violet-500 group-focus:ring-offset-2 group-focus:ring-offset-background"
+                >
+                  <Checkbox.Indicator>
+                    <Check
+                      size={20}
+                      className="text-white"
+                    />
+                  </Checkbox.Indicator>
+                </div>
 
-              <span
-                className="text-white leading-tight"
-              >
-                {weekday}
-              </span>
+                <span
+                  className="text-white leading-tight"
+                >
+                  {weekday}
+                </span>
 
-            </Checkbox.Root>
+              </Checkbox.Root>
+            </motion.div>
           )
         })}
 
