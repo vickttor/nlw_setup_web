@@ -41,7 +41,7 @@ export function SummaryTable() {
         })}
       </div>
 
-        <div className="grid grid-rows-7 grid-flow-col gap-2 w-full p-2 overflow-x-auto">
+        <div className="grid grid-rows-7 grid-flow-col gap-2 w-full p-2 overflow-x-auto lg:overflow-visible ">
           {summary.length > 0 && summaryDates.map(date=> {
 
             const dayInSummary = summary.find(day=>{
